@@ -117,6 +117,7 @@
 
 <script>
 import chapter from "@/api/edu/chapter";
+import video from "@/api/edu/video";
 export default {
   data() {
     return {
@@ -150,13 +151,76 @@ export default {
 
   methods: {
     //===========================小节操作================================
+    //删除小节
+    removeVideo(id){
+      this.$confirm("此操作将永久删除当前小节, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          //调用删除章节接口
+          return video.deleteVideo(id);
+        })
+        .then(() => {
+          //刷新页面
+          this.getChapterVideo();
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+        })
+        .catch((response) => {
+          // 失败
+          if (response === "cancel") {
+            this.$message({
+              type: "info",
+              message: "已取消删除",
+            });
+          } else {
+            this.$message({
+              type: "error",
+              message: "删除失败",
+            });
+          }
+        });
+    },
     //弹出添加小节的弹框
-    openVideo(chapterId){
-      dialogVideoFormVisible = true
-      this.video.title = ''
+    openVideo(chapterId) {
+      this.dialogVideoFormVisible = true
+      //先设置video中的chapterId和courseId，因为数据表中它是非空的
+      this.video.chapterId = chapterId
+      this.video.courseId = this.courseId
+
+      this.video.title = ""
       this.video.sort = 0
       this.video.free = 0
-      this.video.videoSourceId = ''
+      this.video.videoSourceId = ""
+    },
+    //添加小节
+    addVideo() {
+      video.addVideo(this.video).then((response) => {
+        //关闭弹窗
+        this.dialogVideoFormVisible = false;
+        //提示信息
+        this.$message({
+          type: "success",
+          message: "添加小节成功！",
+        });
+        //刷新页面
+        this.getChapterVideo();
+      });
+    },
+
+    //添加或修改小节
+    saveOrUpdateVideo() {
+      //判断是添加还是修改
+      if (!this.video.videoSourceId) {
+        //添加
+        this.addVideo();
+      } else {
+        //修改 TODO
+      }
     },
 
     //===========================章节操作================================
