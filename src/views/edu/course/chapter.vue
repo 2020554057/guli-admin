@@ -149,6 +149,17 @@ export default {
   },
 
   methods: {
+    //===========================小节操作================================
+    //弹出添加小节的弹框
+    openVideo(chapterId){
+      dialogVideoFormVisible = true
+      this.video.title = ''
+      this.video.sort = 0
+      this.video.free = 0
+      this.video.videoSourceId = ''
+    },
+
+    //===========================章节操作================================
     //删除章节
     removeChapter(chapterId) {
       this.$confirm("此操作将永久删除当前章节, 是否继续?", "提示", {
