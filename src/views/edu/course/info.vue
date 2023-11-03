@@ -124,6 +124,7 @@ export default {
         cover: "/static/课程默认封面.png",
         price: 0,
       },
+      courseId: "", //课程id值
       teacherLists: [],
       subjectOneLists: [], //封装所以一级分类数据
       subjectTwoLists: [], //封装二级分类数据
@@ -131,11 +132,71 @@ export default {
     };
   },
   created() {
-    //初始化所有讲师
-    this.getListTeacher();
-    this.getOneSubject();
+    //页面渲染之前执行
+    // this.init();
+    //获取路径id值
+    if (this.$route.params && this.$route.params.id) {
+      this.courseId = this.$route.params.id;
+      //调用根据id查询课程的方法
+      this.getCourseInfoById();
+    } else {
+      //初始化所有讲师
+      this.getListTeacher();
+      //初始化一级分类
+      this.getOneSubject();
+    }
   },
+  //======ToDo====这里有一个Bug
+  // watch: {
+  //   //监听
+  //   $route(to, from) {
+  //     //路由变化方式，路由发生变化，方法就会执行
+  //     this.init();
+  //   },
+  // },
   methods: {
+    // init() {
+    //   //获取路径id值
+    //   if (this.$route.params && this.$route.params.id) {
+    //     this.courseId = this.$route.params.id;
+    //     //调用根据id查询课程的方法
+    //     this.getCourseInfoById();
+    //   } else {
+    //     //初始化所有讲师
+    //     this.getListTeacher();
+    //     //初始化一级分类
+    //     this.getOneSubject();
+
+    //     //路径没有id值，做添加
+    //     //清空表单
+    //     this.courseInfo = {}
+    //     this.courseInfo.description = ""
+    //   }
+    // },
+    //根据课程id获取课程信息
+    getCourseInfoById() {
+      course.getCourseInfoById(this.courseId).then((response) => {
+        //在CourseInfo课程基本信息中，包含一级分类和二级分类的id
+        this.courseInfo = response.data.courseInfoVo;
+        //1、查询所有分类，包含一级分类和二级分类
+        subject.getSubjectList().then((response) => {
+          //2、获取所有一级分类
+          this.subjectOneLists = response.data.list;
+          //3、把所有的一级分类数组进行遍历
+          for (let i = 0; i < this.subjectOneLists.length; i++) {
+            //获取每一个一级分类
+            var oneSubject = this.subjectOneLists[i];
+            //比较当前CourseInfo中的一级分类id和所有的一级分类id
+            if (this.courseInfo.subjectParentId == oneSubject.id) {
+              //获取一级分类所有的二级分类
+              this.subjectTwoLists = oneSubject.children;
+            }
+          }
+        });
+        //初始化所有讲师
+        this.getListTeacher();
+      });
+    },
     //上传封面成功调用的方法
     handleAvatarSuccess(resp, file) {
       this.courseInfo.cover = resp.data.url;
@@ -180,8 +241,8 @@ export default {
         this.teacherLists = response.data.items;
       });
     },
-    //添加课程信息（并下一步）
-    saveOrUpdate() {
+    //添加课程
+    addCourse() {
       course.addCourseInfo(this.courseInfo).then((response) => {
         this.$message({
           message: "添加课程信息成功",
@@ -192,6 +253,30 @@ export default {
           path: "/course/chapter/" + response.data.courseId,
         });
       });
+    },
+    //修改课程
+    updateCourse() {
+      course.updateCourseInfo(this.courseInfo).then((response) => {
+        this.$message({
+          message: "修改课程信息成功",
+          type: "success",
+        });
+        //跳转到第二步，并带着这个课程生成的id
+        this.$router.push({
+          path: "/course/chapter/" + this.courseId,
+        });
+      });
+    },
+    //添加课程信息（并下一步）
+    saveOrUpdate() {
+      //判断是添加还是修改
+      if (!this.courseInfo.id) {
+        //添加
+        this.addCourse();
+      } else {
+        //修改
+        this.updateCourse();
+      }
     },
   },
 };

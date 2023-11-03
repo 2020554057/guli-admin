@@ -15,5 +15,20 @@ export default {
             url: `/eduservice/teacher/findAll`, //这里用的是es6的``不是单引号
             method: 'get',
         })
+    },
+    //3、根据课程id查询课程信息
+    getCourseInfoById(courseId){
+        return request({
+            url: `/eduservice/course/getCourseInfoById/${courseId}`, //这里用的是es6的``不是单引号
+            method: 'get',
+        })
+    },
+    //4、修改课程信息
+    updateCourseInfo(courseInfoVo){
+        return request({
+            url: `/eduservice/course/updateCourseInfo`, //这里用的是es6的``不是单引号
+            method: 'post',
+            data: courseInfoVo
+        })
     }
 }
