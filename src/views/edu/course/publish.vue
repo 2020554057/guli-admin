@@ -33,6 +33,7 @@
 
     <div>
       <el-button @click="previous">返回修改</el-button>
+      <el-button type="warning" @click="returnCourseList">返回课程列表</el-button>
       <el-button :disabled="saveBtnDisabled" type="primary" @click="publish"
         >发布课程</el-button
       >
@@ -71,7 +72,10 @@ export default {
       console.log("previous");
       this.$router.push({ path: "/course/chapter/" + this.courseId });
     },
-
+    returnCourseList(){
+      console.log("returnCourseList");
+      this.$router.push({ path: "/course/list"});
+    },
     publish() {
       //提示
       this.$confirm("此操作发布该课程, 是否继续?", "提示", {

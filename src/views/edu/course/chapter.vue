@@ -260,7 +260,7 @@ export default {
     },
     //添加或修改章节
     saveOrUpdate() {
-      if (!this.chapter.courseId) {
+      if (!this.chapter.id) {
         //添加章节
         this.addChapter();
       } else {

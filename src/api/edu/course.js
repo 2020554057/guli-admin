@@ -46,11 +46,21 @@ export default {
           })
     },
     //TODO 课程列表
-    //课程最终发布
-    getListCourse() {
+    //课程列表(条件查询分页)
+    //current 当前页 limit每页记录数  courseQuery条件对象
+    getCourseListPage(current, limit, courseQuery) {
         return request({
-            url: '/eduservice/course',
-            method: 'get'
-          })
+            url: `/eduservice/course/pageCourseCondition/${current}/${limit}`, //这里用的是es6的``不是单引号
+            method: 'post',
+            //teacherQuery条件对象，后端使用RequestBody获取数据
+            //data表示把对象转换json进行传递到接口
+            data: courseQuery
+        })
+    },
+    deleteCourseById(courseId){
+        return request({
+            url: `/eduservice/course/deleteCourse/${courseId}`, //这里用的是es6的``不是单引号
+            method: 'delete',
+        })
     }
 }
