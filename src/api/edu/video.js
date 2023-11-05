@@ -17,8 +17,6 @@ export default {
             method: 'delete'
         })
     },
-
-
     //=========================================================
     //3、根据章节id查询章节信息
     getChapterInfoById(chapterId) {
@@ -35,5 +33,13 @@ export default {
             data: eduChapter
         })
     },
+    //======================阿里云视频操作接口=====================
+    //删除视频
+    deleteAliyunvod(id) {
+        return request({
+            url: '/eduvod/video/removeAlyVideo/' + id,
+            method: 'delete'
+        })
+    }
 
 }
