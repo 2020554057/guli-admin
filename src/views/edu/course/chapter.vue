@@ -246,18 +246,19 @@ export default {
     },
     //弹出添加小节的弹框
     openVideo(chapterId) {
+      //弹框
       this.dialogVideoFormVisible = true;
+      //清空
+      this.video = {},
+      this.fileList = []
       //先设置video中的chapterId和courseId，因为数据表中它是非空的
+      //设置章节id
       this.video.chapterId = chapterId;
-      this.video.courseId = this.courseId;
-
-      this.video.title = "";
-      this.video.sort = 0;
-      this.video.free = 0;
-      this.video.videoSourceId = "";
     },
     //添加小节
     addVideo() {
+      //设置课程id
+      this.video.courseId = this.courseId;
       video.addVideo(this.video).then((response) => {
         //关闭弹窗
         this.dialogVideoFormVisible = false;
