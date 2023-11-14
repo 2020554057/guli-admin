@@ -164,6 +164,29 @@ export const constantRouterMap = [
     ]
   },
 
+  //统计分析
+  {
+    path: '/sta',
+    component: Layout,
+    redirect: '/sta/create',
+    name: '统计分析',
+    meta: { title: '统计分析', icon: 'nested' },
+    children: [
+      {
+        path: 'create',
+        name: '生成数据',
+        component: () => import('@/views/sta/create.vue'),
+        meta: { title: '生成数据', icon: 'clipboard' }
+      },
+      {
+        path: 'show',
+        name: '图表显示',
+        component: () => import('@/views/sta/show.vue'),
+        meta: { title: '图表显示', icon: 'excel' }
+      }
+    ]
+  },
+
   {
     path: '/example',
     component: Layout,
